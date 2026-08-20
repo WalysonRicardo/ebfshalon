@@ -1,0 +1,9 @@
+{
+  "name": "inscricao-jonas-evento",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Formulário de inscrição e painel da equipe para o evento infantil de Jonas — IB Shalom",
+  "dependencies": {
+    "@upstash/redis": "^1.34.0"
+  }
+}

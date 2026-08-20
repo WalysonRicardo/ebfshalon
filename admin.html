@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Área da equipe — Jonas: Saia do Porão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --deep-sea:#0F3D57;
+    --ocean:#1D6E8C;
+    --teal:#2FA6A0;
+    --sand:#FDF3E1;
+    --sun:#F5B935;
+    --coral:#F2734A;
+    --ink:#0B2E42;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--sand);
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+  }
+  h1,h2,.display{font-family:'Baloo 2',sans-serif;}
+
+  header{
+    background:linear-gradient(180deg, var(--deep-sea), var(--ocean));
+    color:var(--white);
+    padding:28px 20px 60px;
+    text-align:center;
+  }
+  header .church-logo{
+    width:44px;
+    height:auto;
+    margin:0 auto 12px;
+    display:block;
+    filter:drop-shadow(0 3px 8px rgba(0,0,0,0.25));
+  }
+  header .eyebrow{
+    display:inline-block;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    font-size:12px;
+    background:rgba(255,255,255,0.14);
+    border:1px solid rgba(255,255,255,0.35);
+    padding:6px 14px;
+    border-radius:100px;
+    margin-bottom:14px;
+  }
+  header h1{
+    margin:0;
+    font-size:28px;
+  }
+  header p{
+    margin:8px 0 0;
+    font-size:14px;
+    color:rgba(255,255,255,0.85);
+  }
+
+  main{
+    max-width:760px;
+    margin:-36px auto 60px;
+    padding:0 20px;
+  }
+
+  .panel{
+    background:var(--white);
+    border-radius:22px;
+    box-shadow:0 18px 45px -20px rgba(15,61,87,0.35);
+    border:1px solid #EFE4CC;
+    padding:28px 26px;
+  }
+
+  /* Login state */
+  #loginPanel{max-width:380px;margin:0 auto;text-align:center;}
+  #loginPanel .lock-icon{font-size:40px;display:block;margin-bottom:6px;}
+  #loginPanel h2{font-size:19px;margin:0 0 6px;}
+  #loginPanel p{font-size:13.5px;color:#6B7C86;margin:0 0 20px;}
+  #passInput{
+    width:100%;
+    padding:13px 14px;
+    border-radius:12px;
+    border:2px solid #EEE4CC;
+    background:#FFFDF8;
+    font-family:'Nunito',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    margin-bottom:12px;
+    text-align:center;
+  }
+  #passInput:focus{outline:none;border-color:var(--teal);background:var(--white);}
+  .btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:var(--coral);
+    color:var(--white);
+    font-family:'Baloo 2',sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    cursor:pointer;
+  }
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+  .btn.secondary{
+    background:none;
+    border:2px solid var(--teal);
+    color:var(--teal);
+  }
+  #loginStatus{
+    min-height:18px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--coral);
+    margin-top:10px;
+  }
+
+  /* Dashboard state */
+  #dashboard{display:none;}
+  .dash-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .dash-head h2{font-size:19px;margin:0;}
+  .count-pill{
+    background:#EAF6F6;
+    color:var(--teal);
+    font-weight:800;
+    font-size:13px;
+    padding:6px 14px;
+    border-radius:100px;
+  }
+  .actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .actions .btn{width:auto;padding:11px 18px;font-size:14px;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  thead th{
+    text-align:left;
+    font-family:'Baloo 2',sans-serif;
+    color:var(--ocean);
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    padding:8px 10px;
+    border-bottom:2px solid #EEE4CC;
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 10px;
+    border-bottom:1px solid #F3ECDA;
+    vertical-align:top;
+  }
+  tbody tr:hover{background:#FFFBF2;}
+  .table-wrap{overflow-x:auto;}
+  .empty-state{
+    text-align:center;
+    padding:40px 10px;
+    color:#8A7E68;
+  }
+  .empty-state .fish{font-size:36px;display:block;margin-bottom:8px;}
+
+  .tag-sim{color:var(--coral);font-weight:700;}
+  .tag-nao{color:#A99B7E;}
+
+  @media (max-width:560px){
+    .dash-head{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="assets/logo.png" alt="Logo IB Shalom" class="church-logo">
+  <span class="eyebrow">Área restrita</span>
+  <h1>🐋 Painel da equipe</h1>
+  <p>Jonas: Saia do Porão — Sábado, 29 de agosto</p>
+</header>
+
+<main>
+  <div class="panel" id="loginPanel">
+    <span class="lock-icon">🔒</span>
+    <h2>Acesso da equipe</h2>
+    <p>Digite a senha para ver as inscrições do evento.</p>
+    <input type="password" id="passInput" placeholder="Senha" autocomplete="off">
+    <button class="btn" id="loginBtn">Entrar</button>
+    <p id="loginStatus"></p>
+  </div>
+
+  <div class="panel" id="dashboard">
+    <div class="dash-head">
+      <h2>Inscrições recebidas</h2>
+      <span class="count-pill" id="countPill">0 inscrições</span>
+    </div>
+    <div class="actions">
+      <button class="btn" id="refreshBtn" style="width:auto;">🔄 Atualizar</button>
+      <button class="btn" id="exportBtn" style="width:auto;background:var(--ocean);">📊 Baixar planilha (.xlsx)</button>
+      <button class="btn secondary" id="logoutBtn" style="width:auto;">Sair</button>
+    </div>
+
+    <div id="tableArea">
+      <div class="empty-state" id="emptyState">
+        <span class="fish">🐟</span>
+        Nenhuma inscrição por aqui ainda.
+      </div>
+      <div class="table-wrap">
+        <table id="dataTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>Responsável</th>
+              <th>Criança</th>
+              <th>Idade</th>
+              <th>Restrição alimentar</th>
+              <th>Necessidade especial</th>
+              <th>Vínculo</th>
+              <th>Inscrito em</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  const loginPanel = document.getElementById('loginPanel');
+  const dashboard = document.getElementById('dashboard');
+  const passInput = document.getElementById('passInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginStatus = document.getElementById('loginStatus');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const countPill = document.getElementById('countPill');
+  const emptyState = document.getElementById('emptyState');
+  const dataTable = document.getElementById('dataTable');
+  const dataBody = document.getElementById('dataBody');
+
+  let sessionPassword = '';
+  let currentEntries = [];
+
+  function labelSimNao(v){ return v === 'sim' ? 'Sim' : 'Não'; }
+  function labelIgreja(v){ return v === 'visitante' ? 'Visitante' : 'Membro da IB Shalom'; }
+  function formatData(iso){
+    try{ return new Date(iso).toLocaleString('pt-BR'); }
+    catch(e){ return iso || ''; }
+  }
+
+  async function fetchEntries(password){
+    const response = await fetch('/api/export', {
+      headers: { 'Authorization': 'Bearer ' + password }
+    });
+    if(response.status === 401){
+      throw new Error('unauthorized');
+    }
+    if(!response.ok){
+      throw new Error('server_error');
+    }
+    const data = await response.json();
+    return data.entries || [];
+  }
+
+  function renderEntries(entries){
+    currentEntries = entries;
+    countPill.textContent = entries.length + (entries.length === 1 ? ' inscrição' : ' inscrições');
+
+    if(entries.length === 0){
+      emptyState.style.display = 'block';
+      dataTable.style.display = 'none';
+      return;
+    }
+
+    emptyState.style.display = 'none';
+    dataTable.style.display = 'table';
+    dataBody.innerHTML = '';
+
+    entries
+      .slice()
+      .sort((a,b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0))
+      .forEach(entry => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(entry.responsavel || '')}</td>
+          <td>${escapeHtml(entry.crianca || '')}</td>
+          <td>${escapeHtml(String(entry.idade || ''))}</td>
+          <td class="${entry.restricao === 'sim' ? 'tag-sim' : 'tag-nao'}">${labelSimNao(entry.restricao)}${entry.restricao_detalhe ? ' — ' + escapeHtml(entry.restricao_detalhe) : ''}</td>
+          <td class="${entry.especial === 'sim' ? 'tag-sim' : 'tag-nao'}">${labelSimNao(entry.especial)}${entry.especial_detalhe ? ' — ' + escapeHtml(entry.especial_detalhe) : ''}</td>
+          <td>${escapeHtml(labelIgreja(entry.igreja))}</td>
+          <td>${escapeHtml(formatData(entry.criadoEm))}</td>
+        `;
+        dataBody.appendChild(tr);
+      });
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  async function doLogin(){
+    const password = passInput.value;
+    if(!password){ return; }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Entrando...';
+    loginStatus.textContent = '';
+
+    try{
+      const entries = await fetchEntries(password);
+      sessionPassword = password;
+      loginPanel.style.display = 'none';
+      dashboard.style.display = 'block';
+      renderEntries(entries);
+    }catch(err){
+      if(err.message === 'unauthorized'){
+        loginStatus.textContent = 'Senha incorreta. Tente novamente.';
+      }else{
+        loginStatus.textContent = 'Não foi possível conectar. Tente novamente.';
+      }
+      passInput.value = '';
+      passInput.focus();
+    }
+
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Entrar';
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  passInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); doLogin(); } });
+
+  refreshBtn.addEventListener('click', async function(){
+    refreshBtn.disabled = true;
+    try{
+      const entries = await fetchEntries(sessionPassword);
+      renderEntries(entries);
+    }catch(err){
+      alert('Não foi possível atualizar agora. Tente novamente.');
+    }
+    refreshBtn.disabled = false;
+  });
+
+  logoutBtn.addEventListener('click', function(){
+    sessionPassword = '';
+    currentEntries = [];
+    passInput.value = '';
+    loginStatus.textContent = '';
+    dashboard.style.display = 'none';
+    loginPanel.style.display = 'block';
+  });
+
+  exportBtn.addEventListener('click', function(){
+    if(currentEntries.length === 0){
+      alert('Nenhuma inscrição para exportar ainda.');
+      return;
+    }
+
+    const rows = currentEntries.map(entry => ({
+      'Nome do responsável': entry.responsavel || '',
+      'Nome da criança': entry.crianca || '',
+      'Idade': entry.idade || '',
+      'Restrição alimentar': labelSimNao(entry.restricao),
+      'Detalhe da restrição': entry.restricao_detalhe || '',
+      'Necessidade especial': labelSimNao(entry.especial),
+      'Detalhe da necessidade': entry.especial_detalhe || '',
+      'Vínculo com a igreja': labelIgreja(entry.igreja),
+      'Inscrito em': formatData(entry.criadoEm)
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [
+      {wch:24},{wch:22},{wch:8},{wch:16},{wch:28},{wch:18},{wch:28},{wch:22},{wch:18}
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inscrições');
+    XLSX.writeFile(workbook, 'inscricoes-jonas-29-08.xlsx');
+  });
+})();
+</script>
+
+</body>
+</html>
