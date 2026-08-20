@@ -232,6 +232,7 @@
               <th>Restrição alimentar</th>
               <th>Necessidade especial</th>
               <th>Vínculo</th>
+              <th>Quer ajudar?</th>
               <th>Inscrito em</th>
             </tr>
           </thead>
@@ -307,6 +308,7 @@
           <td class="${entry.restricao === 'sim' ? 'tag-sim' : 'tag-nao'}">${labelSimNao(entry.restricao)}${entry.restricao_detalhe ? ' — ' + escapeHtml(entry.restricao_detalhe) : ''}</td>
           <td class="${entry.especial === 'sim' ? 'tag-sim' : 'tag-nao'}">${labelSimNao(entry.especial)}${entry.especial_detalhe ? ' — ' + escapeHtml(entry.especial_detalhe) : ''}</td>
           <td>${escapeHtml(labelIgreja(entry.igreja))}</td>
+          <td class="${entry.ajuda === 'sim' ? 'tag-sim' : 'tag-nao'}">${labelSimNao(entry.ajuda)}</td>
           <td>${escapeHtml(formatData(entry.criadoEm))}</td>
         `;
         dataBody.appendChild(tr);
@@ -385,12 +387,13 @@
       'Necessidade especial': labelSimNao(entry.especial),
       'Detalhe da necessidade': entry.especial_detalhe || '',
       'Vínculo com a igreja': labelIgreja(entry.igreja),
+      'Quer ajudar com a taxa': labelSimNao(entry.ajuda),
       'Inscrito em': formatData(entry.criadoEm)
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(rows);
     worksheet['!cols'] = [
-      {wch:24},{wch:22},{wch:8},{wch:16},{wch:28},{wch:18},{wch:28},{wch:22},{wch:18}
+      {wch:24},{wch:22},{wch:8},{wch:16},{wch:28},{wch:18},{wch:28},{wch:22},{wch:16},{wch:18}
     ];
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Inscrições');

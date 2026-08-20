@@ -37,6 +37,7 @@ export default async function handler(req, res) {
       especial: body.especial === 'sim' ? 'sim' : 'nao',
       especial_detalhe: clean(body.especial_detalhe, MAX_LEN_LONG),
       igreja: body.igreja === 'visitante' ? 'visitante' : 'membro',
+      ajuda: body.ajuda === 'sim' ? 'sim' : 'nao',
       criadoEm: new Date().toISOString(),
     };
 
